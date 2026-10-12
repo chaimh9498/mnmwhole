@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mnmwhole-api",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-12",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mnmwhole-db",
+      "database_id": "699e90a9-96f4-4c36-aadd-c424922ad990"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "mnmwhole-images"
+    }
+  ]
+}
