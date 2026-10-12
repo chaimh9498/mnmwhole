@@ -38,6 +38,15 @@ CREATE TABLE IF NOT EXISTS customers (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS cart_items (
+  clerk_user_id TEXT NOT NULL REFERENCES customers(clerk_user_id) ON DELETE CASCADE,
+  product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL CHECK(quantity > 0),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (clerk_user_id, product_id)
+);
+CREATE INDEX IF NOT EXISTS idx_cart_items_user ON cart_items(clerk_user_id,updated_at);
+
 CREATE TABLE IF NOT EXISTS orders (
   id TEXT PRIMARY KEY,
   clerk_user_id TEXT REFERENCES customers(clerk_user_id) ON DELETE SET NULL,
