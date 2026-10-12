@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">M&amp;M Wholesale logo</title>
+  <desc id="description">Gold M and M monogram on a black background.</desc>
+  <rect width="512" height="512" rx="76" fill="#080909"/>
+  <rect x="15" y="15" width="482" height="482" rx="64" fill="none" stroke="#dabb78" stroke-width="14"/>
+  <text x="256" y="288" fill="#f4f1ea" font-family="Arial, Helvetica, sans-serif" font-size="154" font-weight="800" text-anchor="middle">M&amp;M</text>
+  <text x="256" y="359" fill="#dabb78" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="8" text-anchor="middle">WHOLESALE</text>
+</svg>
