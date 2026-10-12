@@ -53,30 +53,38 @@ function formatProduct(product, images = []) {
 
 async function listProducts(env) {
   const productResult = await env.DB.prepare(`
-    SELECT id, name, slug, sku, category, description, price_cents,
-           stock, featured, created_at, updated_at
+    SELECT *
     FROM products
     WHERE active = 1
     ORDER BY featured DESC, created_at DESC
     LIMIT 200
   `).all();
 
-  const imageResult = await env.DB.prepare(`
-    SELECT i.id, i.product_id, i.object_key, i.alt_text, i.sort_order
-    FROM product_images AS i
-    INNER JOIN products AS p ON p.id = i.product_id
-    WHERE p.active = 1
-    ORDER BY i.product_id, i.sort_order, i.created_at
-  `).all();
+  const products = productResult.results || [];
+  if (products.length === 0) return [];
+
+  let images = [];
+  try {
+    const imageResult = await env.DB.prepare(`
+      SELECT i.*
+      FROM product_images AS i
+      INNER JOIN products AS p ON p.id = i.product_id
+      WHERE p.active = 1
+      ORDER BY i.product_id, i.sort_order, i.created_at
+    `).all();
+    images = imageResult.results || [];
+  } catch (error) {
+    console.warn("Product images could not be loaded", error);
+  }
 
   const imagesByProduct = new Map();
-  for (const image of imageResult.results || []) {
+  for (const image of images) {
     const images = imagesByProduct.get(image.product_id) || [];
     images.push(image);
     imagesByProduct.set(image.product_id, images);
   }
 
-  return (productResult.results || []).map((product) =>
+  return products.map((product) =>
     formatProduct(product, imagesByProduct.get(product.id) || [])
   );
 }
