@@ -168,7 +168,10 @@ export default {
         return jsonResponse({ products: await listProducts(env) }, request);
       } catch (error) {
         console.error("Product listing failed", error);
-        return jsonResponse({ error: "Unable to load products" }, request, 500);
+        return jsonResponse({
+          error: "Unable to load products",
+          details: error instanceof Error ? error.message : String(error)
+        }, request, 500);
       }
     }
 
