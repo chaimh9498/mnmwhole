@@ -158,10 +158,11 @@ async function getCart(env, userId) {
     INNER JOIN products p ON p.id = c.product_id
     WHERE c.clerk_user_id = ? ORDER BY c.updated_at DESC`).bind(userId).all();
   return (result.results || []).map((row) => ({ productId: row.product_id,
-    quantity: Math.min(row.quantity, row.stock), name: row.name, slug: row.slug,
+    quantity: row.quantity, name: row.name, slug: row.slug,
     priceCents: row.price_cents, stock: row.stock, available: Boolean(row.active && row.stock > 0) }));
-}async function saveCart
-  (request, env, userId) {
+}
+
+async function saveCart(request, env, userId) {
   const body = await request.json();
   if (!Array.isArray(body.items) || body.items.length > 100) throw new Error("Invalid cart");
   const email = String(body.email || "").trim().toLowerCase().slice(0, 254);
@@ -177,11 +178,13 @@ async function getCart(env, userId) {
   env.DB.prepare("DELETE FROM cart_items WHERE clerk_user_id = ?").bind(userId)];
   for (const item of normalized) statements.push(env.DB.prepare(`INSERT INTO cart_items
     (clerk_user_id, product_id, quantity, updated_at)
-    SELECT ?, id, MIN(?, stock), datetime('now') FROM products
+    SELECT ?, id, ?, datetime('now') FROM products
     WHERE id = ? AND active = 1 AND stock > 0`).bind(userId, item.quantity, item.productId));
   await env.DB.batch(statements);
   return getCart(env, userId);
-}async function listCustomerCarts(env) {
+}
+
+async function listCustomerCarts(env) {
   const result = await env.DB.prepare(`SELECT u.clerk_user_id,u.email,u.display_name,
     c.product_id,c.quantity,c.updated_at AS cart_updated_at,
     p.name,p.sku,p.price_cents,p.stock,p.active
@@ -207,7 +210,6 @@ async function getCart(env, userId) {
   }
   return [...carts.values()].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
 }
-
 
 async function createProduct(request, env) {
   const input = productInput(await request.json());
