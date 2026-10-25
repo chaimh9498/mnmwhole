@@ -68,8 +68,16 @@ async function authenticate(request) {
   }
 }
 
+const DEFAULT_ADMIN_USER_IDS = [
+  "user_3KaFnYQOSI2kHEKii6MfqCOquAZ",
+  "user_3KbE4YwhwwUMqKvEXk5i3CBnoma",
+  "user_3KhW4CCjo7ag4Eog7M30qacqSqy",
+  "user_3L2NKcknMPbNCfQLUn9o9DPELOH",
+];
+
 function adminIds(env) {
-  return new Set(String(env.ADMIN_USER_IDS || "").split(",").map((id) => id.trim()).filter(Boolean));
+  const configured = String(env.ADMIN_USER_IDS || "").split(",").map((id) => id.trim()).filter(Boolean);
+  return new Set([...DEFAULT_ADMIN_USER_IDS, ...configured]);
 }
 
 function productImageUrl(key) {
