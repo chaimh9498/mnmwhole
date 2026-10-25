@@ -286,7 +286,7 @@ export default {
       try {
         await env.DB.prepare("SELECT 1").first();
         await env.IMAGES.head("__connection_test__");
-        return jsonResponse({ ok: true, database: "connected", imageStorage: "connected" }, request);
+        return jsonResponse({ ok: true, database: "connected", imageStorage: "connected", deployment: "2026-10-25-admin-access" }, request);
       } catch (error) {
         console.error(error);
         return jsonResponse({ ok: false, error: "A required storage binding is unavailable" }, request, 500);
